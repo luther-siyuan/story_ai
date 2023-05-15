@@ -22,20 +22,22 @@ func Completions(session, msg string) (string, error) {
 
 	client := New(resourceName, deploymentName, apiVersion, accessToken)
 
-	req := ChatRequest{
-		Messages: []ChatMessage{
-			{
-				Role:    "system",
-				Content: "you are a helpful chatbot",
-			},
-		},
+	ms := Cache.GetMsg(session)
+	if len(ms) == 0 {
+		ms = append(ms, ChatMessage{
+			Role:    "system",
+			Content: "you are a helpful chatbot",
+		})
 	}
 
-	req.Messages = append(req.Messages, ChatMessage{
+	ms = append(ms, ChatMessage{
 		Role:    "user",
 		Content: msg,
 	})
 
+	req := ChatRequest{
+		Messages: ms,
+	}
 	resp, err := client.ChatCompletion(ctx, req)
 	if err != nil {
 		fmt.Println(err)
@@ -44,5 +46,7 @@ func Completions(session, msg string) (string, error) {
 
 	fmt.Println("gpt chat success ----->")
 
+	ms = append(ms, resp.Choices[0].Message)
+	Cache.SetMsg(session, ms)
 	return "gpt 回答：" + resp.Choices[0].Message.Content, nil
 }
