@@ -36,9 +36,9 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 	log.Printf("Received Group %v Text Msg : %v", group.NickName, msg.Content)
 
 	// 不是@的不处理
-	//if !msg.IsAt() {
-	//	return nil
-	//}
+	if !msg.IsAt() {
+		return nil
+	}
 
 	if strings.Contains(msg.Content, "clear") {
 		chatgpt.Cache.Clear(group.ID())
