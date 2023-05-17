@@ -40,6 +40,11 @@ func (g *GroupMessageHandler) ReplyText(msg *openwechat.Message) error {
 		return nil
 	}
 
+	// 不是@自己不处理
+	if msg.ToUserName != msg.Owner().User.UserName {
+		return nil
+	}
+
 	if strings.Contains(msg.Content, "clear") {
 		chatgpt.Cache.Clear(group.ID())
 		log.Println("clear", group.ID())

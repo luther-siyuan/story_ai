@@ -38,5 +38,5 @@ func Handler(msg *openwechat.Message) {
 	}
 
 	// 私聊
-	handlers[UserHandler].handle(msg)
+	//handlers[UserHandler].handle(msg)
 }
